@@ -1,0 +1,65 @@
+ 
+
+        <form action="login" method="post">
+              <h4 >Login</h4>
+  <div class="mb-3 ">
+    <label class="form-label">name</label>
+    <input type="text" name="email" class="form-control" id="name" aria-describedby="emailHelp">
+  </div>
+  <div class="mb-3">
+    <label  class="form-label">Password</label>
+    <input type="password" name="password" class="form-control" id="password">
+  </div>
+        <p class="error">{{message}}</p>
+  <button type="submit" value="ref" class="btn btn-primary">Submit</button>
+  <a class="text-danger" href="signup">create new account?</a><br><br>
+  <a href="/forgotmypass">Forgot my Password</a>
+</form>
+  
+<style>
+  body{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 80vh;
+      background: rgb(211, 137, 206);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    form{
+      background: rgb(214, 214, 214);
+      padding: 30px;
+      text-align: center;
+      border-radius: 15px;
+      width: 350px;
+    }
+    form input{
+      display: block;
+      background: none;
+      margin: 18px auto;
+      padding: 8px;
+      text-align: center;
+      border: 2px solid #4090db;
+      outline: none;
+      width: 180px;
+      font-size: 22px;
+      border-radius: 10px;
+    }
+    form input[type="submit"]{
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 800;
+      background: #4090db ;
+      color: white;
+    }
+    p{
+      color: red;
+      font-size: 22px;
+      font-weight: 600;
+    }
+</style>
+
+<script>
+  
+ let username= document.getElementById('name')
+ 
+</script>
