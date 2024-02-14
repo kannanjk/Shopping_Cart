@@ -149,8 +149,11 @@
                                                                 value="COD">
                                                             <label for="html">COD</label><br>
                                                             <input type="radio" id="css" name="payment-method"
-                                                                value="ONLINE">
-                                                            <label for="css">Online Payment</label><br>
+                                                                value="RAZORPAY">
+                                                            <label for="css">razor Pay</label><br>
+                                                            <input type="radio" id="cs" name="payment-method"
+                                                                value="PAYPAL">
+                                                            <label for="cs">PayPal</label><br>
                                                         </form>
 
                                                     </div>
@@ -606,7 +609,11 @@
                 if (response.codSuccess) {
                     location.href = '/order-success'
                 } else {
-                    razorpayment(response)
+                    if (response.razorpay) {
+                        razorpayment(response)
+                    }else{
+                        paypal(response)
+                    }
                 }
             }
         })
@@ -639,6 +646,26 @@
         var rzp1 = new Razorpay(options);
         rzp1.open();
     }
+
+   function paypal (order){
+    const execute_payment_json={
+        "payer_id":"payerId",
+        "transactions":[{
+            "amount":{
+                "currency":"USD",
+                "totel":order.total 
+            }
+        }]
+    }
+    paypal.payment.exicute(order.id,execute_payment_json,(err,data)=>{
+        if(err){
+            console.log(err)
+        }else{
+            return data
+        }
+    })
+   }
+
     function verifyPayment(payment, order) {
         $.ajax({
             url: '/verify-Payment',

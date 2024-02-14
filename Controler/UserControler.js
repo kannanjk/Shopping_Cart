@@ -3,14 +3,20 @@ const productModel = require('../Model/ProductModel.js')
 const bcrypt = require('bcrypt')
 const Razorpay = require('razorpay')
 const cartModel = require('../Model/CartModel.js')
+const paypal = require('paypal-rest-sdk')
 const mongoose = require('mongoose')
 const OrderModel = require('../Model/OrderModel.js')
 const CouponModel = require('../Model/CouponModel.js')
 
 var instance = new Razorpay({
-  key_id: 'rzp_test_2KevjUREiq5hiq',
-  key_secret: 'ZpQUxhvR0TE9Z8LzIMZj8AeK',
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.KEY_SECRET,
 })
+paypal.configure({
+  'mode': 'sandbox', //sandbox or live
+  'client_id': process.env.CLIENT_ID,
+  'client_secret': process.env.CLIENT_SECRET
+});
 
 const verifylogin = (req, res, next) => {
   if (req.session.user) {
@@ -308,17 +314,49 @@ const genaratRaz = (orderId, total) => {
   instance.orders.create(options, function (err, order) {
     if (err) {
       console.log(err);
-      console.log("ivide err");
     } else {
       return order
-      console.log("successes");
     }
   })
 }
 
+const genaratPaypal = (orderId, total) => {
+  var create_payment_json = {
+    "intent": "sale",
+    "payer": {
+      "payment_method": "paypal"
+    },
+    "transactions": [{
+      "item_list": {
+        "items": [{
+          "name": orderId,
+          "sku": "item",
+          "price": total * 100,
+          "currency": "USD",
+          "quantity": 1
+        }]
+      },
+      "amount": {
+        "currency": "USD",
+        "total": total
+      },
+      "description": "This is the payment description."
+    }]
+  };
+
+  paypal.payment.create(create_payment_json, function (error, payment) {
+    if (error) {
+      throw error;
+    } else {
+      console.log("Create Payment Response");
+      return payment
+    }
+  });
+}
+
 const placeOrder = async (req, res) => {
   const products = await cartModel.findOne({ user: req.body.userId })
-  if (products.length > 0) {
+  if (products.products.length > 0) {
     const total = await cartTot(req.body.userId)
     const { mobile, address, pincode, name, userId } = req.body
     let status = req.body['payment-method'] === 'COD' ? 'placed' : 'pending'
@@ -341,11 +379,15 @@ const placeOrder = async (req, res) => {
     if (req.body['payment-method'] === 'COD') {
       res.json({ codSuccess: true })
     } else {
-      const response = genaratRaz(resp._id, total)
-      res.json(response)
+      if (req.body['payment-method'] === 'RAZORPAY') {
+        const response = genaratRaz(resp._id, total)
+        res.json({razorpay:true,response:response})
+      } else {
+        const response = genaratPaypal(resp._id, total)
+        res.json({paypal:true,response:response})
+      }
+ 
     }
-  } else {
-    res.redirect('/cart')
   }
 }
 

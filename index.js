@@ -5,12 +5,9 @@ const mongoose = require ('mongoose')
 const session = require('express-session')
 const hbs = require ('express-handlebars')
 const fileUpload = require('express-fileupload')
-const dotenv = require('dotenv')
+require('dotenv').config()
 const UserRouter = require('./Router/UserRouter.js')
 const adminRouter =require('./Router/AdminRouter.js')
-
-
-dotenv.config()
 
 const app = express(); 
 
@@ -25,13 +22,13 @@ app.engine('hbs', hbs.engine({
   partialsDir: __dirname + '/views/partials/'
 }))
 
-// middleware
+// middleware   
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  name : 'codeil',
+  name : 'codeil', 
   secret : 'something',   
   resave :true,
   saveUninitialized: true,
@@ -54,5 +51,5 @@ mongoose.connect(process.env.MONGO,
 })
 
 app.listen(process.env.PORT,()=>{
-    console.log("Server Running");
+    console.log(`Server Running On Port ${process.env.PORT}`);
 }) 

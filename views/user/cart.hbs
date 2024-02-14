@@ -1,4 +1,3 @@
-
 {{!-- <div class="container">
     <table class="table mt-5">
         <thead>
@@ -9,7 +8,7 @@
                 <th scope="col">quantity</th>
             </tr>
         </thead>
-        <tbody>   
+        <tbody>
             {{#each products}}
             <tr>
                 <td><img style="width:70px;height:90px;" src="/product-image/{{this.product._id}}.jpg" alt=""></td>
@@ -23,7 +22,7 @@
                         onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',1)">+</button>
                 </td>
                 <td>
-                     <button class="btn btn-danger" onclick="  removepro('{{this.product._id}}')" >Remove </button>  
+                    <button class="btn btn-danger" onclick="  removepro('{{this.product._id}}')">Remove </button>
                 </td>
             </tr>
             {{/each}}
@@ -34,11 +33,11 @@
         <h3 class="float-left mr-5 mt-4">Total: RS. <span id="total">{{totalValue}}</span></h3>
         <a href="/place-order" class="btn btn-success mt-3" style="width: 100%;">Place Order</a>
     </div>
-</div> 
+</div>
 
 
- 
- --}}
+
+--}}
 
 
 
@@ -50,7 +49,7 @@
 
 <body>
 
-  <!-- ...:::: End Offcanvas Mobile Menu Section:::... -->
+    <!-- ...:::: End Offcanvas Mobile Menu Section:::... -->
 
     <!-- Start Offcanvas Mobile Menu Section -->
     <div id="offcanvas-about" class="offcanvas offcanvas-rightside offcanvas-mobile-about-section">
@@ -286,40 +285,43 @@
                                     <!-- Start Cart Table Head -->
                                     <thead>
                                         <tr>
-                                            
+
                                             <th class="product_thumb">Image</th>
                                             <th class="product_name">Product</th>
                                             <th class="product-price">Price</th>
                                             <th class="product_quantity">Quantity</th>
                                             <th class="product_remove">Delete</th>
-                                           
+
                                         </tr>
                                     </thead> <!-- End Cart Table Head -->
                                     <tbody>
                                         <!-- Start Cart Single Item-->
-                                         {{#each products}}
+                                        {{#each products}}
                                         <tr>
-                                          
+
                                             <td class="product_thumb"><a href="product-details-default.html"><img
-                                                       style="width:70px;height:90px;" src="/product-image/{{this.product._id}}.jpg"
-                                                        alt=""></a></td>
-                                            <td class="product_name"><a href="product-details-default.html">{{this.product.name}}</a></td>
+                                                        style="width:70px;height:90px;"
+                                                        src="/product-image/{{this.product._id}}.jpg" alt=""></a></td>
+                                            <td class="product_name"><a
+                                                    href="product-details-default.html">{{this.product.name}}</a></td>
                                             <td class="product-price">RS:{{this.product.prize}}</td>
-                                             <td>
-                    <button class="cart-item-count mr-2"
-                        onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',-1)">-</button>
-                    <span id="{{this.product._id}}">{{this.quantity}}</span>
-                    <button class="cart-item-count ml-2 "
-                        onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',1)">+</button>
-                </td>
-                                             <td class="product_remove"><a onclick="  removepro('{{this.product._id}}')"><i class="fa fa-trash-o"></i></a>
+                                            <td>
+                                                <button class="cart-item-count mr-2"
+                                                    onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',-1)">-</button>
+                                                <span id="{{this.product._id}}">{{this.quantity}}</span>
+                                                <button class="cart-item-count ml-2 "
+                                                    onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user}}',1)">+</button>
+                                            </td>
+                                            <td class="product_remove"><a
+                                                    onclick="  removepro('{{this.product._id}}')"><i
+                                                        class="fa fa-trash-o"></i></a>
                                             </td>
                                         </tr>
                                         {{/each}}
                                     </tbody>
                                 </table>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>
@@ -335,11 +337,12 @@
                             <h3>Coupon</h3>
                             <div class="coupon_inner">
                                 <p>Enter your coupon code if you have one.</p>
-                                <input id="couponInput"  type="text" class="mb-2" placeholder="Coupon code">
-                                <button id="applybtn" onclick="applycoupon('{{totalValue}}')" type="submit" class="btn btn-md btn-golden">Apply coupon</button>
-                                  <p id="couponError"></p>
+                                <input id="couponInput" type="text" class="mb-2" placeholder="Coupon code">
+                                <button id="applybtn" onclick="applycoupon('{{totalValue}}')" type="submit"
+                                    class="btn btn-md btn-golden">Apply coupon</button>
+                                <p id="couponError"></p>
                             </div>
-                           
+
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6">
@@ -358,7 +361,8 @@
 
                                 <div class="cart_subtotal">
                                     <p>Total</p>
-                                    <p class="cart_amount"><span id="total">RS :<span id="grandTotalAmount"></span>  {{totalValue}}</span><br><span id="grandTotalAmoun"> </span></p>
+                                    <p class="cart_amount"><span id="total">RS :<span id="grandTotalAmount"></span>
+                                            {{totalValue}}</span><br><span id="grandTotalAmoun"> </span></p>
                                 </div>
                                 <div class="checkout_btn">
                                     <a href="/place-order" class="btn btn-md btn-golden">Proceed to Checkout</a>
@@ -722,8 +726,8 @@
                 </div>
             </div>
         </div>
-    </div> 
-   
+    </div>
+
 </body>
 
 
@@ -733,45 +737,45 @@
 
 <script>
 
-    function removepro( proId) {
+    function removepro(proId) {
         $.ajax({
             url: '/removepro/' + proId,
-            method:'get',
-            success:(response)=>{
-                if(response.status){
+            method: 'get',
+            success: (response) => {
+                if (response.status) {
                     location.reload()
                 }
-                
+
             }
         })
     }
 
-    function applycoupon(subtotal){
-        let code=document.getElementById("couponInput").value;
-        if(code==""){
-            document.getElementById("couponError").style.color="red";
-            document.getElementById("couponError").innerHTML="enter a coupon code";
-        }else{
+    function applycoupon(subtotal) {
+        let code = document.getElementById("couponInput").value;
+        if (code == "") {
+            document.getElementById("couponError").style.color = "red";
+            document.getElementById("couponError").innerHTML = "enter a coupon code";
+        } else {
             $.ajax({
-                url:"/verifycoupon",
-                method:"post",
-                data:{
+                url: "/verifycoupon",
+                method: "post",
+                data: {
                     code,
                     subtotal
                 },
-            success: (response) => {
-          if (response) {
-            const a = subtotal-response.maxDiscountAmt
-             document.getElementById("couponError").style.color="blue";
-            document.getElementById("couponError").innerHTML=response.message;
-            document.getElementById("grandTotalAmoun").innerHTML =
-            "Discoun with Total :" +a;
-          } else {
-            document.getElementById("CouponError").style.color = "red";
-            document.getElementById("CouponError").innerHTML =
-              response.message;
-          }
-        },
+                success: (response) => {
+                    if (response) {
+                        const a = subtotal - response.maxDiscountAmt
+                        document.getElementById("couponError").style.color = "blue";
+                        document.getElementById("couponError").innerHTML = response.message;
+                        document.getElementById("grandTotalAmoun").innerHTML =
+                            "Discoun with Total :" + a;
+                    } else {
+                        document.getElementById("CouponError").style.color = "red";
+                        document.getElementById("CouponError").innerHTML =
+                            response.message;
+                    }
+                },
             })
         }
     }
@@ -794,9 +798,9 @@
                 quantity: quantity
             },
             method: 'post',
-            success: (response) => {  
+            success: (response) => {
                 if (response.removproduct) {
-                    alert("product removed from cart") 
+                    alert("product removed from cart")
                     location.reload()
                 } else {
                     document.getElementById(proId).innerHTML = quantity + count
