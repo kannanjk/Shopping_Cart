@@ -8,7 +8,7 @@ const fileUpload = require('express-fileupload')
 require('dotenv').config()
 const UserRouter = require('./Router/UserRouter.js')
 const adminRouter =require('./Router/AdminRouter.js')
-
+ 
 const app = express(); 
 
 // view engine 
@@ -43,12 +43,12 @@ app.use('/admi', adminRouter)
 // mongdb connections
 mongoose.connect(process.env.MONGO,
   {
-    useNewUrlParser: true,
+    useNewUrlParser: true, 
     useUnifiedTopology: true
   }
   ).then(()=>{
     console.log("DB connected");
-})
+}) 
 
 app.listen(process.env.PORT,()=>{
     console.log(`Server Running On Port ${process.env.PORT}`);
