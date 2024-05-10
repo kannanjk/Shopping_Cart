@@ -12,10 +12,10 @@ router.get('/logOut', LogOut)
 router.get('/add-to-cart/:id', verifylogin, addToCart)
 router.get('/cart', verifylogin, getCartProduct)
 router.post('/changeproductquantity', changeproductquantity)
-router.get('/removepro/:id', removepro)
-router.post('/verifycoupon', verifylogin, checkCoupon)
+router.get('/removepro/:id', removepro) 
+router.post('/verifycoupon', verifylogin, checkCoupon) 
 router.get('/place-order', verifylogin, getTotalAmount)
-router.post('/place-order',verifylogin, placeOrder) 
+router.post('/place-order', placeOrder) //verfylogin 
 router.get('/order-success', successOrder)
 router.post('/verify-Payment', verifyPayment)
 

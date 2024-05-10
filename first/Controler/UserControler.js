@@ -7,6 +7,8 @@ const paypal = require('paypal-rest-sdk')
 const mongoose = require('mongoose')
 const OrderModel = require('../Model/OrderModel.js')
 const CouponModel = require('../Model/CouponModel.js')
+const Address = require('../Model/AddressModel.js')
+const { ObjectId } = require('mongodb')
 
 var instance = new Razorpay({
   key_id: process.env.KEY_ID,
@@ -355,38 +357,99 @@ const genaratPaypal = (orderId, total) => {
 }
 
 const placeOrder = async (req, res) => {
+  const { mobile, address, pincode, name, userId } = req.body
   const products = await cartModel.findOne({ user: req.body.userId })
   if (products.products.length > 0) {
     const total = await cartTot(req.body.userId)
-    const { mobile, address, pincode, name, userId } = req.body
     let status = req.body['payment-method'] === 'COD' ? 'placed' : 'pending'
-    const order = new OrderModel({
-      deliveryDetils: {
-        mobile: mobile,
-        address: address,
-        totalAmount: total,
-        pincode: pincode,
-        name: name
-      },
-      userId: userId,
-      paymentmethod: req.body['payment-method'],
-      products: products,
-      status: status,
-      date: new Date()
-    })
-    const resp = await order.save()
-    await cartModel.deleteOne({ user: req.body.userId })
-    if (req.body['payment-method'] === 'COD') {
-      res.json({ codSuccess: true })
-    } else {
-      if (req.body['payment-method'] === 'RAZORPAY') {
-        const response = genaratRaz(resp._id, total)
-        res.json({razorpay:true,response:response})
+    const addre = await Address.findOne({ user: userId })
+
+    if (ObjectId.isValid(address)) { 
+      if (new ObjectId(address) == address) {
+        const oldAddr = await Address.findOne(
+          { user: new mongoose.Types.ObjectId(userId) },
+          { "address": { $elemMatch: { _id: new mongoose.Types.ObjectId(address) } } }
+        )
+        const a = oldAddr.address[0]
+        const order = new OrderModel({
+          deliveryDetils: {
+            mobile: mobile,
+            address: a.address,
+            totalAmount: total,
+            pincode: pincode,
+            name: name
+          },
+          userId: userId,
+          paymentmethod: req.body['payment-method'],
+          products: products,
+          status: status,
+          date: new Date()
+        })
+        const resp = await order.save()
+      //   await cartModel.deleteOne({ user: req.body.userId })
+      // if (req.body['payment-method'] === 'COD') {
+      //   res.json({ codSuccess: true })
+      // } else {
+      //   if (req.body['payment-method'] === 'RAZORPAY') {
+      //     const response = genaratRaz(resp._id, total)
+      //     res.json({ razorpay: true, response: response })
+      //   } else {
+      //     const response = genaratPaypal(resp._id, total)
+      //     res.json({ paypal: true, response: response })
+      //   }
+
+      // }
       } else {
-        const response = genaratPaypal(resp._id, total)
-        res.json({paypal:true,response:response})
+        console.log("strin");
       }
- 
+    } else {
+      if (!addre) {
+        const newaddr = new Address({
+          user: userId,
+          address: [
+            {
+              address: address
+            }
+          ]
+        })
+        await newaddr.save()
+      } else {
+        const add = {
+          address: address
+        }
+        await Address.updateOne(
+          { user: userId },
+          { $push: { address: add } }
+        )
+      }
+      const order = new OrderModel({
+        deliveryDetils: {
+          mobile: mobile,
+          address: address,
+          totalAmount: total,
+          pincode: pincode,
+          name: name
+        },
+        userId: userId,
+        paymentmethod: req.body['payment-method'],
+        products: products,
+        status: status,
+        date: new Date()
+      })
+      const resp = await order.save()
+      // await cartModel.deleteOne({ user: req.body.userId })
+      // if (req.body['payment-method'] === 'COD') {
+      //   res.json({ codSuccess: true })
+      // } else {
+      //   if (req.body['payment-method'] === 'RAZORPAY') {
+      //     const response = genaratRaz(resp._id, total)
+      //     res.json({ razorpay: true, response: response })
+      //   } else {
+      //     const response = genaratPaypal(resp._id, total)
+      //     res.json({ paypal: true, response: response })
+      //   }
+
+      // }
     }
   }
 }
